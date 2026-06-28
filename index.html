@@ -946,20 +946,140 @@
       transform: translateY(0);
     }
 
+    /* ===== HAMBURGER ===== */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      z-index: 200;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 26, 48, 0.98);
+      z-index: 150;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.3rem;
+      font-weight: 300;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: 0.25em;
+    }
+
+    .mobile-menu a:hover { color: var(--gold); }
+
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 900px) {
-      section { padding: 80px 24px; }
-      nav { padding: 16px 24px; }
-      nav.scrolled { padding: 12px 24px; }
+    @media (max-width: 768px) {
+      section { padding: 80px 20px; }
+
+      #navbar { padding: 16px 20px; }
+      #navbar.scrolled { padding: 12px 20px; }
       .nav-links { display: none; }
-      #about { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
-      .mv-inner { grid-template-columns: 1fr; gap: 40px; }
-      .values-grid { grid-template-columns: 1fr 1fr; }
+      .hamburger { display: flex; }
+
+      .nav-logo img { height: 40px; }
+
+      /* HERO */
+      #hero { padding: 0 20px; }
+      .hero-title { font-size: 2.4rem; letter-spacing: 0.08em; }
+      .hero-sub { font-size: 0.75rem; letter-spacing: 0.25em; }
+      .hero-en { font-size: 1.1rem; }
+      .hero-desc { font-size: 0.82rem; }
+      .hero-ornament { width: 320px; height: 320px; }
+
+      /* PURPOSE */
+      #purpose { padding: 70px 20px; }
+      .purpose-main { font-size: 1.3rem; }
+
+      /* ABOUT */
+      #about {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+        padding: 70px 20px !important;
+      }
+      .about-image-wrap { aspect-ratio: 3/2; }
+
+      /* MV */
+      #mv { padding: 70px 20px; }
+      .mv-inner { grid-template-columns: 1fr; gap: 48px; }
+
+      /* VALUES */
+      #values { padding: 70px 20px; }
+      .values-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+      .value-card { padding: 32px 16px; }
+      .value-en { font-size: 1rem; }
+
+      /* SERVICE */
+      #service { padding: 70px 20px; }
+      .service-grid { grid-template-columns: 1fr; gap: 20px; }
+      .service-card { padding: 36px 24px; }
+
+      /* STRENGTH */
+      #strength { padding: 70px 20px; }
       .strength-grid { grid-template-columns: 1fr 1fr; }
-      .service-grid { grid-template-columns: 1fr; }
-      .message-inner { grid-template-columns: 1fr; }
-      .footer-inner { flex-direction: column; gap: 40px; }
-      .footer-nav { flex-direction: column; gap: 32px; }
+      .strength-item { padding: 32px 16px; }
+
+      /* MESSAGE */
+      #message { padding: 70px 20px; }
+      .message-inner {
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+        text-align: center;
+      }
+      .message-quote { text-align: left; font-size: 1rem; }
+      .profile-img { width: 160px; height: 160px; }
+
+      /* RECRUIT */
+      #recruit { padding: 70px 20px; }
+      .recruit-lead { font-size: 0.85rem; }
+
+      /* COMPANY */
+      #company { padding: 70px 20px; }
+      .company-table th { width: 120px; font-size: 0.78rem; padding-right: 12px; }
+      .company-table td { font-size: 0.8rem; }
+
+      /* CONTACT */
+      #contact { padding: 70px 20px; }
+
+      /* FOOTER */
+      footer { padding: 48px 20px 32px; }
+      .footer-inner { flex-direction: column; gap: 32px; }
+      .footer-nav { flex-direction: column; gap: 24px; }
+      .footer-nav-group h4 { margin-bottom: 12px; }
+
+      /* SECTION TITLES */
+      .section-title { font-size: 1.6rem; }
+    }
+
+    @media (max-width: 400px) {
+      .values-grid { grid-template-columns: 1fr; }
+      .strength-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 2rem; }
     }
   </style>
 </head>
@@ -968,6 +1088,9 @@
   <!-- NAV -->
   <nav id="navbar">
     <a href="#hero" class="nav-logo"><img src="images/logo.png" alt="株式会社Meilis"></a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
     <ul class="nav-links">
       <li><a href="#about">ABOUT</a></li>
       <li><a href="#service">SERVICE</a></li>
@@ -978,6 +1101,17 @@
       <li><a href="#contact">CONTACT</a></li>
     </ul>
   </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" onclick="closeMenu()">ABOUT</a>
+    <a href="#service" onclick="closeMenu()">SERVICE</a>
+    <a href="#strength" onclick="closeMenu()">STRENGTH</a>
+    <a href="#message" onclick="MESSAGE">MESSAGE</a>
+    <a href="#recruit" onclick="closeMenu()">RECRUIT</a>
+    <a href="#company" onclick="closeMenu()">COMPANY</a>
+    <a href="#contact" onclick="closeMenu()">CONTACT</a>
+  </div>
 
   <!-- HERO -->
   <section id="hero">
@@ -1299,7 +1433,7 @@
   <footer>
     <div class="footer-inner">
       <div>
-        <img src="images/logo.png" alt="株式会社Meilis" style="height:70px;width:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.85;">
+        <img src="images/logo.png" alt="株式会社Meilis" style="height:80px;width:auto;object-fit:contain;">
         <div class="footer-tagline" style="margin-top:8px;">芽吹き、咲き誇れ。</div>
       </div>
       <nav class="footer-nav">
@@ -1335,6 +1469,19 @@
   </footer>
 
   <script>
+    // Mobile menu
+    function toggleMenu() {
+      const h = document.getElementById('hamburger');
+      const m = document.getElementById('mobileMenu');
+      h.classList.toggle('open');
+      m.classList.toggle('open');
+    }
+
+    function closeMenu() {
+      document.getElementById('hamburger').classList.remove('open');
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+
     // Nav scroll
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
