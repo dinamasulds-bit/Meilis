@@ -145,12 +145,13 @@
 
     .hero-title {
       font-family: 'Noto Serif JP', serif;
-      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-size: clamp(2rem, 4vw, 4rem);
       font-weight: 300;
       color: var(--white);
-      letter-spacing: 0.15em;
+      letter-spacing: 0.12em;
       line-height: 1.4;
       margin-bottom: 24px;
+      white-space: nowrap;
     }
 
     .hero-title em {
@@ -934,6 +935,159 @@
       letter-spacing: 0.2em;
     }
 
+    /* ===== LOADING ===== */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: var(--navy-dark);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      transition: opacity 0.8s ease;
+    }
+
+    #loading.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #loading img {
+      width: 180px;
+      animation: loadingPulse 1.5s ease-in-out infinite;
+    }
+
+    .loading-bar {
+      width: 160px;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-bar::after {
+      content: '';
+      position: absolute;
+      left: -100%;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--gold);
+      animation: loadingBar 1.5s ease forwards;
+    }
+
+    @keyframes loadingPulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.97); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes loadingBar {
+      0% { left: -100%; }
+      100% { left: 0%; }
+    }
+
+    /* ===== VIDEO BG ===== */
+    .hero-video-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .hero-video-bg video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 177.78vh;
+      height: 56.25vw;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .hero-video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(15,26,48,0.82) 0%,
+        rgba(26,39,68,0.75) 50%,
+        rgba(45,90,61,0.65) 100%
+      );
+      z-index: 1;
+    }
+
+    #hero .hero-ornament,
+    #hero .hero-content,
+    #hero .scroll-indicator {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ===== HERO TEXT ANIMATION ===== */
+    .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: charIn 0.5s ease forwards;
+    }
+
+    @keyframes charIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== STATS ===== */
+    #stats {
+      background: var(--navy-dark);
+      padding: 80px 60px;
+    }
+
+    .stats-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .stat-item {
+      padding: 48px 24px;
+      text-align: center;
+      background: var(--navy-dark);
+    }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-unit {
+      font-size: 1.2rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.2em;
+    }
+
+    @media (max-width: 768px) {
+      #stats { padding: 60px 20px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-num { font-size: 2.2rem; }
+      .stat-item { padding: 32px 16px; }
+    }
+
     /* ===== ANIMATIONS ===== */
     .fade-in {
       opacity: 0;
@@ -1085,6 +1239,12 @@
 </head>
 <body>
 
+  <!-- LOADING -->
+  <div id="loading">
+    <img src="images/logo.png" alt="Meilis">
+    <div class="loading-bar"></div>
+  </div>
+
   <!-- NAV -->
   <nav id="navbar">
     <a href="#hero" class="nav-logo"><img src="images/logo.png" alt="株式会社Meilis"></a>
@@ -1115,18 +1275,24 @@
 
   <!-- HERO -->
   <section id="hero">
+    <div class="hero-video-bg">
+      <video autoplay muted loop playsinline>
+        <source src="images/18491373-uhd_3840_2160_30fps.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero-video-overlay"></div>
     <div class="hero-ornament"></div>
     <div class="hero-content">
-      <p class="hero-sub">Connect. Grow. Bloom.</p>
-      <h1 class="hero-title">
+      <p class="hero-sub" id="heroSub" style="opacity:0">Connect. Grow. Bloom.</p>
+      <h1 class="hero-title" id="heroTitle" style="opacity:0">
         芽吹き、<em>咲き誇れ。</em>
       </h1>
-      <p class="hero-en">Bloom Beyond.</p>
-      <p class="hero-desc">
+      <p class="hero-en" id="heroEn" style="opacity:0">Bloom Beyond.</p>
+      <p class="hero-desc" id="heroDesc" style="opacity:0">
         通信の力で、人の未来をもっと豊かに。<br>
         一人ひとりの可能性を芽吹かせ、花を咲かせる会社。
       </p>
-      <a href="#about" class="btn-primary"><span>私たちについて</span></a>
+      <a href="#about" class="btn-primary" id="heroBtn" style="opacity:0"><span>私たちについて</span></a>
     </div>
     <div class="scroll-indicator">
       <span>SCROLL</span>
@@ -1139,12 +1305,12 @@
     <div class="purpose-inner fade-in">
       <p class="section-label">Purpose</p>
       <p class="purpose-main">
-        人の可能性を咲かせ、<br>社会をもっと明るくする。
+        人を笑顔にし、<br>挑戦できる未来をつくる。
       </p>
       <div class="gold-line" style="margin: 0 auto 32px;"></div>
       <p class="purpose-sub">
-        通信という生活インフラを通じ、<br>
-        お客様・仲間・企業の未来をより豊かにする。
+        縁をつなぎ、可能性を広げ、<br>
+        日本一"人の成長"を大切にする会社へ。
       </p>
     </div>
   </section>
@@ -1162,6 +1328,10 @@
       <p>私たちは通信サービスを通じて、お客様・企業・働く仲間の未来を支える営業会社です。</p>
       <p>「Mei」は代表・浦田生芽の名に由来し、"芽吹き・始まり"を意味します。「Lis」は花咲く（Bloom）・つながる（Link）を込めた造語。</p>
       <p>モノを売る会社ではなく、<strong>人を育て、人を輝かせる会社</strong>として、通信業界に新たな価値を届けます。</p>
+      <p style="margin-top:32px; padding-top:32px; border-top:1px solid var(--light-gray); font-family:'Noto Serif JP', serif; font-size:1.3rem; color:var(--navy); letter-spacing:0.15em;">
+        「人を大切にする。」
+      </p>
+      <p style="font-size:0.85rem;">売上も結果も大事。でも、そのために人を犠牲にする会社にはしない。お客様を大切にし、仲間を大切にし、自分自身も大切にする。その積み重ねが、信頼され続ける会社をつくると信じています。</p>
     </div>
   </div>
 
@@ -1170,25 +1340,25 @@
     <div class="mv-inner">
       <div class="mv-item fade-in">
         <p class="section-label">Mission</p>
-        <h2 class="section-title">人と人をつなぎ、<br>人生を豊かにする<br>価値を届ける。</h2>
+        <h2 class="section-title">通信サービスを通じ、<br>人々の生活を<br>より豊かにする。</h2>
         <div class="gold-line"></div>
-        <p>私たちは通信サービスを通して、暮らしを便利にするだけではなく、出会い・信頼・感動・成長を届け続けます。</p>
+        <p>お客様一人ひとりに最適な提案と感動を届け、安心・快適・便利を当たり前にする。人と人をつなぎ、コミュニケーションの可能性を広げ続けます。</p>
         <div class="key-words">
-          <span class="kw">出会い</span>
-          <span class="kw">信頼</span>
+          <span class="kw">提案</span>
           <span class="kw">感動</span>
-          <span class="kw">成長</span>
+          <span class="kw">安心</span>
+          <span class="kw">つながり</span>
         </div>
       </div>
       <div class="mv-item fade-in">
         <p class="section-label">Vision</p>
-        <h2 class="section-title">通信業界で、<br>最も"花のある<br>会社"になる。</h2>
+        <h2 class="section-title">通信業界で一番、<br>人の成長を大切にし、<br>信頼される会社へ。</h2>
         <div class="gold-line"></div>
-        <p>数字だけではなく、働く人が輝き、お客様が笑顔になり、パートナーから選ばれる。そんな会社を創ります。</p>
+        <p>10年後、全国各地に仲間がいて、多くのお客様から信頼される会社に。「人生が変わった」「この会社に出会えてよかった」と心から思える会社でありたい。学歴・経歴・年齢に関係なく、挑戦したい人が活躍できる環境をつくります。</p>
         <div class="key-words">
-          <span class="kw">People</span>
-          <span class="kw">Smile</span>
-          <span class="kw">Trust</span>
+          <span class="kw">全国拠点</span>
+          <span class="kw">挑戦</span>
+          <span class="kw">信頼</span>
         </div>
       </div>
     </div>
@@ -1199,34 +1369,34 @@
     <div class="values-inner">
       <div class="values-header fade-in">
         <p class="section-label">Values</p>
-        <h2 class="section-title">5つの行動指針</h2>
+        <h2 class="section-title">大切にする価値観</h2>
         <div class="gold-line"></div>
       </div>
       <div class="values-grid">
         <div class="value-card fade-in">
-          <div class="value-en">Bloom</div>
-          <div class="value-jp">咲かせる</div>
-          <p class="value-desc">仲間の可能性を信じる。自分だけではなく、周りも成長させる。</p>
+          <div class="value-en">01 Gratitude</div>
+          <div class="value-jp">感謝を忘れない</div>
+          <p class="value-desc">どんな仕事も一人ではできない。お客様、仲間、家族、取引先。「ありがとう」を当たり前に言える人でいてほしい。</p>
         </div>
         <div class="value-card fade-in">
-          <div class="value-en">Challenge</div>
-          <div class="value-jp">挑戦</div>
-          <p class="value-desc">昨日より今日。現状維持は後退。挑戦する人を称える。</p>
+          <div class="value-en">02 Challenge</div>
+          <div class="value-jp">挑戦することを恐れない</div>
+          <p class="value-desc">失敗は悪いことではない。何もせず後悔するより、挑戦して学ぶ方が価値がある。まずやってみる姿勢を大切に。</p>
         </div>
         <div class="value-card fade-in">
-          <div class="value-en">Trust</div>
-          <div class="value-jp">信頼</div>
-          <p class="value-desc">約束を守る。嘘をつかない。信頼を積み重ねる。</p>
+          <div class="value-en">03 Connection</div>
+          <div class="value-jp">人との縁を大切にする</div>
+          <p class="value-desc">人生も仕事も、人との出会いで大きく変わる。目の前の人を大切にし、信頼を積み重ねることで可能性が広がる。</p>
         </div>
         <div class="value-card fade-in">
-          <div class="value-en">Hospitality</div>
-          <div class="value-jp">感動</div>
-          <p class="value-desc">期待を超える接客。期待を超える営業。期待を超える行動。</p>
+          <div class="value-en">04 Loyalty</div>
+          <div class="value-jp">仲間を見捨てない</div>
+          <p class="value-desc">調子が良い時だけでなく、苦しい時こそ支え合う。誰かが困っていたら手を差し伸べ、仲間の成功を共に喜べる組織でありたい。</p>
         </div>
         <div class="value-card fade-in">
-          <div class="value-en">One Team</div>
-          <div class="value-jp">チーム</div>
-          <p class="value-desc">個人ではなくチーム。助け合い、称え合い、勝ちにいく。</p>
+          <div class="value-en">05 Humility</div>
+          <div class="value-jp">素直でいる</div>
+          <p class="value-desc">年齢や経験に関係なく、学ぶ姿勢を持ち続けること。素直な人ほど成長し、自分の可能性を広げていける。</p>
         </div>
       </div>
     </div>
@@ -1328,15 +1498,14 @@
         <h2 class="section-title" style="font-size:1.6rem;">代表メッセージ</h2>
         <div class="gold-line"></div>
         <blockquote class="message-quote">
-          誰もが最初は小さな芽です。<br>
-          環境や仲間との出会いによって、<br>
-          その芽は大きく成長し、<br>
-          美しい花を咲かせることができます。
+          下を向いていた人が、<br>
+          上を向くきっかけをつくる会社に。
         </blockquote>
         <p class="message-body">
-          私は、人には必ず「咲く力」があると信じています。<br><br>
-          Meilisは、人の可能性を信じ、挑戦する人を全力で応援する会社です。<br><br>
-          通信業界を通じて、多くのお客様に価値を届けるとともに、働く仲間一人ひとりが誇りを持ち、自分らしく輝ける会社をつくっていきます。
+          今働いている会社を見ている中で、「自分だったらこうしたい」「自分ならこんな会社をつくりたい」という強い想いが生まれました。ただ利益を追いかけるだけではなく、人を大切にし、一人でも多くの人を笑顔にできる会社をつくりたい。<br><br>
+          私は現在19歳です。経験は少ないかもしれません。しかし19歳だからこそ、失敗を恐れずに挑戦できることがあると思っています。やりたいと思ったことを先延ばしにせず、今この瞬間に行動する。後悔のない人生を送るために、自分の可能性を信じて一歩を踏み出しました。<br><br>
+          学歴や経歴に関係なく、夢や挑戦を諦めてしまう人がいます。私はそういった人たちにこそ、仕事の楽しさや自分の可能性を知ってほしい。どんな経歴であっても、自分次第で成長できること、努力次第で人生を変えられることを伝えていきたいです。<br><br>
+          会社が大きくなっても創業時の想いを忘れず、人との縁を大切にしながら、笑顔と挑戦があふれる会社を目指していきます。
         </p>
       </div>
     </div>
@@ -1381,8 +1550,8 @@
           <td>通信営業代行 / イベント運営 / 人材サービス</td>
         </tr>
         <tr>
-          <th>理念</th>
-          <td>人の可能性を咲かせ、社会をもっと明るくする。</td>
+          <th>経営理念</th>
+          <td>人を大切にする。<br><span style="font-size:0.78rem; color:#9ca3af;">売上も結果も大事だが、そのために人を犠牲にする会社にはしない。お客様を大切にし、仲間を大切にし、自分自身も大切にする。</span></td>
         </tr>
         <tr>
           <th>お問い合わせ</th>
@@ -1469,6 +1638,154 @@
   </footer>
 
   <script>
+    // Loading screen
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loading = document.getElementById('loading');
+        loading.classList.add('hide');
+        setTimeout(() => { loading.style.display = 'none'; }, 800);
+        startHeroAnimation();
+      }, 1600);
+    });
+
+    // Hero text animation
+    function animateChars(el, delay) {
+      const text = el.innerHTML;
+      // split by char but keep HTML tags intact
+      el.style.opacity = 1;
+      const chars = [...el.querySelectorAll('*')].length > 0 ? null : el.textContent;
+      if (el.tagName === 'H1') {
+        // handle h1 with em tag
+        let d = delay;
+        el.style.opacity = 1;
+        el.querySelectorAll('em').length
+          ? animateH1(el, d)
+          : splitAndAnimate(el, d);
+      } else {
+        splitAndAnimate(el, delay);
+      }
+    }
+
+    function splitAndAnimate(el, startDelay) {
+      const original = el.innerHTML;
+      const text = el.textContent;
+      el.style.opacity = 1;
+      let html = '';
+      let d = startDelay;
+      for (let i = 0; i < original.length; i++) {
+        const c = original[i];
+        if (c === '<') {
+          // skip html tags
+          const end = original.indexOf('>', i);
+          html += original.substring(i, end + 1);
+          i = end;
+        } else if (c === ' ' || c === '\n') {
+          html += c;
+        } else {
+          html += `<span class="char" style="animation-delay:${d}ms">${c}</span>`;
+          d += 50;
+        }
+      }
+      el.innerHTML = html;
+    }
+
+    function animateH1(el, startDelay) {
+      el.style.opacity = 1;
+      let d = startDelay;
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          // text node
+          const chars = node.textContent;
+          let html = '';
+          for (const c of chars) {
+            if (c.trim()) {
+              html += `<span class="char" style="animation-delay:${d}ms">${c}</span>`;
+              d += 60;
+            } else {
+              html += c;
+            }
+          }
+          const span = document.createElement('span');
+          span.innerHTML = html;
+          node.replaceWith(span);
+        } else if (node.nodeName === 'EM') {
+          let html = '';
+          for (const c of node.textContent) {
+            if (c.trim()) {
+              html += `<span class="char" style="animation-delay:${d}ms">${c}</span>`;
+              d += 60;
+            } else {
+              html += c;
+            }
+          }
+          node.innerHTML = html;
+        }
+      });
+    }
+
+    function startHeroAnimation() {
+      const sub = document.getElementById('heroSub');
+      const title = document.getElementById('heroTitle');
+      const en = document.getElementById('heroEn');
+      const desc = document.getElementById('heroDesc');
+      const btn = document.getElementById('heroBtn');
+
+      splitAndAnimate(sub, 0);
+
+      setTimeout(() => animateH1(title, 0), 400);
+
+      setTimeout(() => {
+        en.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        en.style.transform = 'translateY(10px)';
+        en.style.opacity = 0;
+        requestAnimationFrame(() => {
+          en.style.opacity = 1;
+          en.style.transform = 'translateY(0)';
+        });
+      }, 1200);
+
+      setTimeout(() => {
+        desc.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        desc.style.opacity = 1;
+        desc.style.transform = 'translateY(0)';
+      }, 1600);
+
+      setTimeout(() => {
+        btn.style.transition = 'opacity 0.6s ease';
+        btn.style.opacity = 1;
+      }, 2000);
+    }
+
+    // Counter animation
+    function animateCounter(el) {
+      const target = +el.dataset.target;
+      const duration = 2000;
+      const step = 16;
+      const increment = target / (duration / step);
+      let current = 0;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          el.textContent = target;
+          clearInterval(timer);
+        } else {
+          el.textContent = Math.floor(current);
+        }
+      }, step);
+    }
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.count').forEach(animateCounter);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    const statsEl = document.getElementById('stats');
+    if (statsEl) counterObserver.observe(statsEl);
+
     // Mobile menu
     function toggleMenu() {
       const h = document.getElementById('hamburger');
